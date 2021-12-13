@@ -150,12 +150,11 @@ class HGSig:
         """
         Performs the differential representation testing
         """
-        print(self.distributions)
-        for dist in tqdm(self.distributions):
+        pval_mat = np.zeros_like(self.distributions)
+        for idx, dist in tqdm(enumerate(self.distributions)):
             for overrep in [True, False]:
-                pval = self.methods[self.method](
+                pval_mat[idx] = self.methods[self.method](
                         r_draw=self.ref_dist,
                         t_draw=dist,
                         overrep=overrep)
-                print(pval)
-            print("")
+        return pval_mat
