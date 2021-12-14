@@ -117,9 +117,13 @@ def test_run_single_reference():
 
     for method in ["fishers", "hypergeom"]:
         hgs = HGSig(clusters, groups, reference, method=method)
-        pval = hgs.run()
+        hgs.fit()
+        pval = hgs.get_pval()
+        pcc = hgs.get_pcc()
         assert isinstance(pval, np.ndarray)
+        assert isinstance(pcc, np.ndarray)
         assert pval.shape == (np.unique(groups).size, np.unique(clusters).size)
+        assert pcc.shape == (np.unique(groups).size, np.unique(clusters).size)
 
 def test_run_multi_reference():
     """
@@ -137,14 +141,22 @@ def test_run_multi_reference():
 
         for method in ["fishers", "hypergeom"]:
             hgs = HGSig(clusters, groups, reference, method=method)
-            pval = hgs.run()
+            hgs.fit()
+            pval = hgs.get_pval()
+            pcc = hgs.get_pcc()
             assert isinstance(pval, np.ndarray)
+            assert isinstance(pcc, np.ndarray)
             assert pval.shape == (np.unique(groups).size, np.unique(clusters).size)
+            assert pcc.shape == (np.unique(groups).size, np.unique(clusters).size)
 
         # only run aggregation tests on fishers because it is not guaranteed to pass
         # all tests with hypergeometric testing
         for agg in ["sum", "mean", "median"]:
             hgs = HGSig(clusters, groups, reference, method="fishers", agg=agg)
-            pval = hgs.run()
+            hgs.fit()
+            pval = hgs.get_pval()
+            pcc = hgs.get_pcc()
             assert isinstance(pval, np.ndarray)
+            assert isinstance(pcc, np.ndarray)
             assert pval.shape == (np.unique(groups).size, np.unique(clusters).size)
+            assert pcc.shape == (np.unique(groups).size, np.unique(clusters).size)

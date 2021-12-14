@@ -50,8 +50,9 @@ hgs = HGSig(
 )
 
 # run testing
-pval = hgs.run()
-
+hgs.fit()
+pval = hgs.get_pval()
+pcc = hgs.get_pcc()
 ```
 
 ## Fisher's Exact Test
@@ -87,7 +88,9 @@ hgs = HGSig(
 )
 
 # run testing
-pval = hgs.run()
+hgs.fit()
+pval = hgs.get_pval()
+pcc = hgs.get_pcc()
 ```
 
 ## Single Reference Group
@@ -124,7 +127,9 @@ hgs = HGSig(
 )
 
 # run testing
-pval = hgs.run()
+hgs.fit()
+pval = hgs.get_pval()
+pcc = hgs.get_pcc()
 ```
 
 ## Multiple Groups with an Alternative Aggregation Function
@@ -162,5 +167,7 @@ hgs = HGSig(
 )
 
 # run testing
-pval = hgs.run()
+hgs.fit()
+pval = hgs.get_pval()
+pcc = hgs.get_pcc()
 ```
