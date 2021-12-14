@@ -20,6 +20,7 @@ This tool is intended to be used as a python module.
 
 ## Multiple References
 ```python
+import numpy as np
 from hgsig import HGSig
 
 # Number of observations
@@ -55,6 +56,7 @@ pval = hgs.run()
 
 ## Fisher's Exact Test
 ```python
+import numpy as np
 from hgsig import HGSig
 
 # Number of observations
@@ -91,6 +93,7 @@ pval = hgs.run()
 ## Single Reference Group
 It is highly recommended here to use a fisher's exact test because the hypergeometric testing conditions will generally not be satisfied using only a single group. This is because if the groups are of equal sizes it is likely you will have more than the original number of observations in the reference group and thus fail the prerequirements for the hypergeometric test. This condition is not required for a fisher's exact test and so it should be used in this case.
 ```python
+import numpy as np
 from hgsig import HGSig
 
 # Number of observations
@@ -127,6 +130,7 @@ pval = hgs.run()
 ## Multiple Groups with an Alternative Aggregation Function
 The default aggregation function for the references is to sum the values across each of the conditions, but it is also possible to use alternative aggregation strategies if it is of interest.
 ```python
+import numpy as np
 from hgsig import HGSig
 
 # Number of observations
