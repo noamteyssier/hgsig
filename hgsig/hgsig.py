@@ -42,9 +42,7 @@ class HGSig:
         self.method = method
         self.agg = agg
 
-        self.c_unique, self.c_counts = np.unique(self.clusters, return_counts=True)
-        self.g_unique, self.g_counts = np.unique(self.groups, return_counts=True)
-
+        self._build_unique()
         self._validate_inputs()
         self._validate_agg()
         self._set_reference()
@@ -52,6 +50,15 @@ class HGSig:
         self._initialize_references()
         self._validate_method()
 
+    def _build_unique(self):
+        """
+        determines the unique group and cluster names and their respective
+        counts
+        """
+        self.c_unique, self.c_counts = np.unique(
+                self.clusters, return_counts=True)
+        self.g_unique, self.g_counts = np.unique(
+                self.groups, return_counts=True)
 
     def _validate_inputs(self):
         """
@@ -59,19 +66,19 @@ class HGSig:
         """
         c_total = self.c_counts.sum()
         g_total = self.g_counts.sum()
-        
+
         if c_total != g_total:
             raise ValueError(
                     f"Provided inputs are different sizes: {c_total} != {g_total}")
-        
+
         if len(self.clusters) <= 1:
             raise ValueError(
                     "Provided inputs must contain more than 2 observations")
-        
+
         if not np.all(np.isin(self.reference, self.g_unique)):
             raise ValueError(
                     f"Provided reference ({self.reference}) not in provided groups")
-        
+
         if self.g_unique.size <= 1:
             raise ValueError(
                     "Provided groups must have more than one value")
