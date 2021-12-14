@@ -33,19 +33,19 @@ n_clusters = 8
 
 # randomly assign clusters
 clusters = np.array([
-	f"c{i}" for i in np.random.choice(n_clusters, size=size)
+    f"c{i}" for i in np.random.choice(n_clusters, size=size)
 ])
 
 # randomly assign groups
 groups = np.array([
-	f"g{i}" for i in np.random.choice(n_groups, size=size)
+    f"g{i}" for i in np.random.choice(n_groups, size=size)
 ])
 
 # initialize object
 hgs = HGSig(
-	clusters,
-	groups,
-	reference=["g0", "g3"]
+    clusters,
+    groups,
+    reference=["g0", "g3"]
 )
 
 # run testing
@@ -68,20 +68,20 @@ n_clusters = 8
 
 # randomly assign clusters
 clusters = np.array([
-	f"c{i}" for i in np.random.choice(n_clusters, size=size)
+    f"c{i}" for i in np.random.choice(n_clusters, size=size)
 ])
 
 # randomly assign groups
 groups = np.array([
-	f"g{i}" for i in np.random.choice(n_groups, size=size)
+    f"g{i}" for i in np.random.choice(n_groups, size=size)
 ])
 
 # initialize object
 hgs = HGSig(
-	clusters,
-	groups,
-	reference=["g0", "g3"],
-	method="fishers"
+    clusters,
+    groups,
+    reference=["g0", "g3"],
+    method="fishers"
 )
 
 # run testing
@@ -104,20 +104,20 @@ n_clusters = 8
 
 # randomly assign clusters
 clusters = np.array([
-	f"c{i}" for i in np.random.choice(n_clusters, size=size)
+    f"c{i}" for i in np.random.choice(n_clusters, size=size)
 ])
 
 # randomly assign groups
 groups = np.array([
-	f"g{i}" for i in np.random.choice(n_groups, size=size)
+    f"g{i}" for i in np.random.choice(n_groups, size=size)
 ])
 
 # initialize object
 hgs = HGSig(
-	clusters,
-	groups,
-	reference="g0",
-	method="fishers"
+    clusters,
+    groups,
+    reference="g0",
+    method="fishers"
 )
 
 # run testing
@@ -140,21 +140,21 @@ n_clusters = 8
 
 # randomly assign clusters
 clusters = np.array([
-	f"c{i}" for i in np.random.choice(n_clusters, size=size)
+    f"c{i}" for i in np.random.choice(n_clusters, size=size)
 ])
 
 # randomly assign groups
 groups = np.array([
-	f"g{i}" for i in np.random.choice(n_groups, size=size)
+    f"g{i}" for i in np.random.choice(n_groups, size=size)
 ])
 
 # initialize object
 hgs = HGSig(
-	clusters,
-	groups,
-	reference=["g0", "g1", "g2"],
-	method="fishers",
-	agg="mean"
+    clusters,
+    groups,
+    reference=["g0", "g1", "g2"],
+    method="fishers",
+    agg="mean"
 )
 
 # run testing
