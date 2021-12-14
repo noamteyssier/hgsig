@@ -6,7 +6,7 @@ from scipy.stats import hypergeom
 from scipy.stats import fisher_exact
 
 
-def hypergeom_test(r_draw, t_draw, overrep=True):
+def hypergeom_test(r_draw, t_draw):
     """
     performs significance testing between cluster
     representations as a hypergeometric test.
@@ -31,20 +31,21 @@ def hypergeom_test(r_draw, t_draw, overrep=True):
     if not np.all(r_draw >= t_draw):
         raise ValueError(
                 "Some values are larger in the test draw than in the reference")
+    if np.all(r_draw == t_draw):
+        return np.ones_like(r_draw)
 
     param_M = r_draw.sum()
     param_n = r_draw
     param_N = t_draw.sum()
     param_k = t_draw
 
-    if overrep:
-        pval = hypergeom.sf(param_k, M=param_M, n=param_n, N=param_N)
-    else:
-        pval = hypergeom.cdf(param_k, M=param_M, n=param_n, N=param_N)
-    return pval
+    pval_high = hypergeom.sf(param_k, M=param_M, n=param_n, N=param_N)
+    pval_low = hypergeom.cdf(param_k, M=param_M, n=param_n, N=param_N)
+
+    return multidim_min(pval_high, pval_low)
 
 
-def fishers_test(r_draw, t_draw, overrep=True):
+def fishers_test(r_draw, t_draw):
     """
     performs significance testing between cluster
     representations as a fishers exact test.
@@ -53,21 +54,41 @@ def fishers_test(r_draw, t_draw, overrep=True):
     N : total number of observations in test
     """
     assert r_draw.size == t_draw.size
-    if overrep:
-        alt = "greater"
-    else:
-        alt = "less"
+    if np.all(r_draw == t_draw):
+        return np.ones_like(r_draw)
 
     num_obs = r_draw.size
     param_M = r_draw.sum()
     param_N = t_draw.sum()
 
-    pval = np.zeros(num_obs)
+    pval_high = np.zeros(num_obs)
+    pval_low = np.zeros(num_obs)
     for i in np.arange(num_obs):
         table = np.array([
             [r_draw[i], param_M - r_draw[i]],
             [t_draw[i], param_N - t_draw[i]]])
-        pval[i] = fisher_exact(table, alternative=alt)[1]
-    return pval
+        pval_high[i] = fisher_exact(table, alternative="greater")[1]
+        pval_low[i] = fisher_exact(table, alternative="less")[1]
+
+    return multidim_min(pval_high, pval_low)
 
 
+def multidim_min(x: np.ndarray, y: np.ndarray) -> np.ndarray:
+    """
+    takes the minimum value between two arrays of equal size
+    """
+    assert x.size == y.size
+    mat = np.vstack([x, y])
+    return np.min(mat, axis=0)
+
+
+def percent_change(r_draw, t_draw):
+    """
+    calculates the percent change between a reference group
+    and a test group. Will first normalize the vectors so that
+    their total will sum to 1
+    """
+    assert r_draw.size == t_draw.size
+    r_norm = r_draw / r_draw.sum()
+    t_norm = t_draw / t_draw.sum()
+    return (t_norm - r_norm) / r_norm
