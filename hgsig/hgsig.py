@@ -8,6 +8,7 @@ from tqdm import tqdm
 from .utils import hypergeom_test
 from .utils import fishers_test
 from .utils import percent_change
+from .utils import false_discovery_rate
 
 
 class HGSig:
@@ -54,6 +55,9 @@ class HGSig:
 
         self.pval_mat = np.zeros_like(self.distributions)
         self.pcc_mat = np.zeros_like(self.distributions)
+        self.qval_mat = np.zeros_like(self.distributions)
+        self.nlf_mat = np.zeros_like(self.distributions)
+        self.snlf_mat = np.zeros_like(self.distributions)
 
     def _build_unique(self):
         """
@@ -180,7 +184,28 @@ class HGSig:
                     self.ref_dist,
                     dist)
 
+        self._calculate_fdr()
+        self._calculate_nlf()
+        self._calculate_snlf()
         self._isfit = True
+
+    def _calculate_fdr(self):
+        """
+        calculates the false discovery rate
+        """
+        self.qval_mat = false_discovery_rate(self.pval_mat)
+
+    def _calculate_nlf(self):
+        """
+        calculates the negative log false discovery rate
+        """
+        self.nlf_mat = -np.log10(self.qval_mat)
+
+    def _calculate_snlf(self):
+        """
+        calculates the signed negative log false discovery rate
+        """
+        self.snlf_mat = np.sign(self.pcc_mat) * self.nlf_mat
 
     def get_pval(self):
         """
@@ -190,6 +215,33 @@ class HGSig:
             raise AttributeError(
                 "Please run the .fit() method first")
         return self.pval_mat
+
+    def get_qval(self):
+        """
+        retrieve the q-value matrix
+        """
+        if not self._isfit:
+            raise AttributeError(
+                "Please run the .fit() method first")
+        return self.qval_mat
+
+    def get_nlf(self):
+        """
+        retrieve the -log10 transformed q-value matrix
+        """
+        if not self._isfit:
+            raise AttributeError(
+                "Please run the .fit() method first")
+        return self.nlf_mat
+
+    def get_snlf(self):
+        """
+        retrieve the percent change signed -log10 transformed q-value matrix
+        """
+        if not self._isfit:
+            raise AttributeError(
+                "Please run the .fit() method first")
+        return self.snlf_mat
 
     def get_pcc(self):
         """
