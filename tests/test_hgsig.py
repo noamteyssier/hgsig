@@ -29,6 +29,23 @@ def build_groups(size=NUM):
     return np.array([
         f"g{i}" for i in np.random.choice(NUM_G, size=size)])
 
+def validate_methods(hgs: HGSig):
+    """
+    validate specific methods of the HGSig object
+    once it is fit
+    """
+    pval = hgs.get_pval()
+    pcc = hgs.get_pcc()
+    qval = hgs.get_qval()
+    nlf = hgs.get_nlf()
+    snlf = hgs.get_snlf()
+
+    for mat in [pval, pcc, qval, nlf, snlf]:
+        assert isinstance(mat, np.ndarray)
+        assert mat.shape == (
+                hgs.get_groups().size,
+                hgs.get_clusters().size)
+
 
 def test_init_multiple_ref():
     """
@@ -118,12 +135,7 @@ def test_run_single_reference():
     for method in ["fishers", "hypergeom"]:
         hgs = HGSig(clusters, groups, reference, method=method)
         hgs.fit()
-        pval = hgs.get_pval()
-        pcc = hgs.get_pcc()
-        assert isinstance(pval, np.ndarray)
-        assert isinstance(pcc, np.ndarray)
-        assert pval.shape == (np.unique(groups).size, np.unique(clusters).size)
-        assert pcc.shape == (np.unique(groups).size, np.unique(clusters).size)
+        validate_methods(hgs)
 
 def test_run_multi_reference():
     """
@@ -142,21 +154,11 @@ def test_run_multi_reference():
         for method in ["fishers", "hypergeom"]:
             hgs = HGSig(clusters, groups, reference, method=method)
             hgs.fit()
-            pval = hgs.get_pval()
-            pcc = hgs.get_pcc()
-            assert isinstance(pval, np.ndarray)
-            assert isinstance(pcc, np.ndarray)
-            assert pval.shape == (np.unique(groups).size, np.unique(clusters).size)
-            assert pcc.shape == (np.unique(groups).size, np.unique(clusters).size)
+            validate_methods(hgs)
 
         # only run aggregation tests on fishers because it is not guaranteed to pass
         # all tests with hypergeometric testing
         for agg in ["sum", "mean", "median"]:
             hgs = HGSig(clusters, groups, reference, method="fishers", agg=agg)
             hgs.fit()
-            pval = hgs.get_pval()
-            pcc = hgs.get_pcc()
-            assert isinstance(pval, np.ndarray)
-            assert isinstance(pcc, np.ndarray)
-            assert pval.shape == (np.unique(groups).size, np.unique(clusters).size)
-            assert pcc.shape == (np.unique(groups).size, np.unique(clusters).size)
+            validate_methods(hgs)
