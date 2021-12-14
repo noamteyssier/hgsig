@@ -5,10 +5,12 @@ from typing import List, Union
 import numpy as np
 from tqdm import tqdm
 
-from .utils import hypergeom_test
-from .utils import fishers_test
-from .utils import percent_change
-from .utils import false_discovery_rate
+from .utils import (
+    chisquare_test,
+    fishers_test,
+    hypergeom_test,
+    percent_change,
+    false_discovery_rate)
 
 
 class HGSig:
@@ -32,7 +34,7 @@ class HGSig:
                 the value(s) representing which group(s) to use as reference.
                 Will aggregate the values of the references if multiple are provided.
             method: str
-                the method to calculate significance with (hypergeom, fishers)
+                the method to calculate significance with (hypergeom, fishers, chisquare)
             agg: str
                 the aggregation method to use for multiple reference values.
                 known values : (sum[default], mean, median)
@@ -145,6 +147,7 @@ class HGSig:
         """
         self.methods = {
                 "fishers": fishers_test,
+                "chisquare": chisquare_test,
                 "hypergeom": hypergeom_test}
 
         if self.method not in self.methods.keys():
