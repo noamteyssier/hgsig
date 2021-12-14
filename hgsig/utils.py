@@ -1,12 +1,17 @@
 """
 Utility functions
 """
+from typing import Union
 import numpy as np
-from scipy.stats import hypergeom
-from scipy.stats import fisher_exact
+from scipy.stats import (
+    hypergeom,
+    fisher_exact,
+    chi2_contingency)
 
 
-def hypergeom_test(r_draw, t_draw):
+def hypergeom_test(
+        r_draw: np.ndarray,
+        t_draw: np.ndarray) -> np.ndarray:
     """
     performs significance testing between cluster
     representations as a hypergeometric test.
@@ -45,13 +50,22 @@ def hypergeom_test(r_draw, t_draw):
     return multidim_min(pval_high, pval_low)
 
 
-def fishers_test(r_draw, t_draw):
+def exact_test(
+        r_draw: np.ndarray,
+        t_draw: np.ndarray,
+        method: Union[fisher_exact, chi2_contingency]) -> np.ndarray:
     """
-    performs significance testing between cluster
-    representations as a fishers exact test.
+    perform a conditional test by creating a contigency table.
 
-    M : total number of observations in reference
-    N : total number of observations in test
+    inputs:
+        r_draw: np.ndarray
+            the numerical values representing the number of observations in each category
+            for the reference distribution
+        t_draw: np.ndarray
+            the numerical values representing the number of observations in each category
+            for the test distribution
+        method: Union[fisher_exact, chi2_contingency]
+            the statistical test to measure significance
     """
     assert r_draw.size == t_draw.size
     if np.all(r_draw == t_draw):
@@ -61,19 +75,46 @@ def fishers_test(r_draw, t_draw):
     param_M = r_draw.sum()
     param_N = t_draw.sum()
 
-    pval_high = np.zeros(num_obs)
-    pval_low = np.zeros(num_obs)
+    pval = np.zeros(num_obs)
     for i in np.arange(num_obs):
         table = np.array([
             [r_draw[i], param_M - r_draw[i]],
             [t_draw[i], param_N - t_draw[i]]])
-        pval_high[i] = fisher_exact(table, alternative="greater")[1]
-        pval_low[i] = fisher_exact(table, alternative="less")[1]
 
-    return multidim_min(pval_high, pval_low)
+        pval[i] = method(table)[1]
+
+    return pval 
 
 
-def multidim_min(x: np.ndarray, y: np.ndarray) -> np.ndarray:
+def fishers_test(
+        r_draw: np.ndarray,
+        t_draw: np.ndarray) -> np.ndarray:
+    """
+    performs significance testing between cluster
+    representations as a fishers exact test.
+
+    M : total number of observations in reference
+    N : total number of observations in test
+    """
+    return exact_test(r_draw, t_draw, fisher_exact) 
+
+
+def chisquare_test(
+        r_draw: np.ndarray,
+        t_draw: np.ndarray) -> np.ndarray:
+    """
+    performs significance testing between cluster
+    representations as a chi-squared test.
+
+    M : total number of observations in reference
+    N : total number of observations in test
+    """
+    return exact_test(r_draw, t_draw, chi2_contingency)
+
+
+def multidim_min(
+        x: np.ndarray,
+        y: np.ndarray) -> np.ndarray:
     """
     takes the minimum value between two arrays of equal size
     """
@@ -82,7 +123,9 @@ def multidim_min(x: np.ndarray, y: np.ndarray) -> np.ndarray:
     return np.min(mat, axis=0)
 
 
-def percent_change(r_draw, t_draw):
+def percent_change(
+        r_draw: np.ndarray,
+        t_draw: np.ndarray) -> np.ndarray:
     """
     calculates the percent change between a reference group
     and a test group. Will first normalize the vectors so that
@@ -94,7 +137,8 @@ def percent_change(r_draw, t_draw):
     return (t_norm - r_norm) / r_norm
 
 
-def false_discovery_rate(pval):
+def false_discovery_rate(
+        pval: np.ndarray) -> np.ndarray:
     """
     converts the pvalues into false discovery rate q-values
     """
@@ -103,7 +147,8 @@ def false_discovery_rate(pval):
     return qval.reshape(dim)
 
 
-def p_adjust_bh(p):
+def p_adjust_bh(
+        p: np.ndarray) -> np.ndarray:
     """
     Benjamini-Hochberg p-value correction for multiple hypothesis testing.
     https://stackoverflow.com/a/33532498
