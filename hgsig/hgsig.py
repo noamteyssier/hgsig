@@ -124,7 +124,7 @@ class HGSig:
         calculates the cluster representation of each cluster~group
         """
         self.distributions = np.zeros((self.g_unique.size, self.c_unique.size))
-        for idx, group in tqdm(enumerate(self.g_unique)):
+        for idx, group in tqdm(enumerate(self.g_unique), desc="Calculating Distributions"):
             self.distributions[idx] = np.array([
                 np.sum(
                     (self.clusters == cluster) &
@@ -175,7 +175,7 @@ class HGSig:
         self.pval_mat = np.zeros_like(self.distributions)
         self.pcc_mat = np.zeros_like(self.distributions)
 
-        for idx, dist in tqdm(enumerate(self.distributions)):
+        for idx, dist in tqdm(enumerate(self.distributions), desc="Calculating Significance"):
 
             # calculate the significance
             self.pval_mat[idx] = self.methods[self.method](
