@@ -59,19 +59,23 @@ class HGSig:
         """
         c_total = self.c_counts.sum()
         g_total = self.g_counts.sum()
+        
         if c_total != g_total:
             raise ValueError(
                     f"Provided inputs are different sizes: {c_total} != {g_total}")
+        
         if len(self.clusters) <= 1:
             raise ValueError(
-                    "Provided inputs must contain more than 2 observations"
-                    )
+                    "Provided inputs must contain more than 2 observations")
+        
         if not np.all(np.isin(self.reference, self.g_unique)):
             raise ValueError(
                     f"Provided reference ({self.reference}) not in provided groups")
+        
         if self.g_unique.size <= 1:
             raise ValueError(
                     "Provided groups must have more than one value")
+
         if self.c_unique.size <= 1:
             raise ValueError(
                     "Provided clusters must have more than one value")
