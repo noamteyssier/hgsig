@@ -7,6 +7,7 @@ from tqdm import tqdm
 
 from .utils import hypergeom_test
 from .utils import fishers_test
+from .utils import percent_change
 
 
 class HGSig:
@@ -41,6 +42,7 @@ class HGSig:
         self.reference = np.array(reference)
         self.method = method
         self.agg = agg
+        self._isfit = False
 
         self._build_unique()
         self._validate_inputs()
@@ -49,6 +51,9 @@ class HGSig:
         self._initialize_distributions()
         self._initialize_references()
         self._validate_method()
+
+        self.pval_mat = np.zeros_like(self.distributions)
+        self.pcc_mat = np.zeros_like(self.distributions)
 
     def _build_unique(self):
         """
@@ -156,18 +161,56 @@ class HGSig:
                         dataset or rerun the tool with `method=fishers`
                         """)
 
-    def run(self):
+    def fit(self):
         """
         Performs the differential representation testing
         """
-        pval_mat = np.zeros_like(self.distributions)
+        self.pval_mat = np.zeros_like(self.distributions)
+        self.pcc_mat = np.zeros_like(self.distributions)
+
         for idx, dist in tqdm(enumerate(self.distributions)):
-            for overrep in [True, False]:
-                pval_mat[idx] = self.methods[self.method](
-                        r_draw=self.ref_dist,
-                        t_draw=dist,
-                        overrep=overrep)
-        return pval_mat
+
+            # calculate the significance
+            self.pval_mat[idx] = self.methods[self.method](
+                    r_draw=self.ref_dist,
+                    t_draw=dist)
+
+            # calculate the percent change
+            self.pcc_mat[idx] = percent_change(
+                    self.ref_dist,
+                    dist)
+
+        self._isfit = True
+
+    def get_pval(self):
+        """
+        retrieve the pval matrix
+        """
+        if not self._isfit:
+            raise AttributeError(
+                "Please run the .fit() method first")
+        return self.pval_mat
+
+    def get_pcc(self):
+        """
+        retrieve the percent change matrix
+        """
+        if not self._isfit:
+            raise AttributeError(
+                "Please run the .fit() method first")
+        return self.pcc_mat
+
+    def get_groups(self):
+        """
+        retrieve the group names
+        """
+        return self.g_unique
+
+    def get_clusters(self):
+        """
+        retrieve the cluster names
+        """
+        return self.c_unique
 
     def __repr__(self) -> str:
         """
@@ -178,5 +221,6 @@ class HGSig:
         num_c = f"n_groups: {self.c_unique.size}"
         method = f"method: {self.method}"
         reference = f"reference: {self.reference}"
-        attr = [name, num_g, num_c, method, reference]
+        fit = f"is fit: {self._isfit}"
+        attr = [name, num_g, num_c, method, reference, fit]
         return "\n  ".join(attr)
