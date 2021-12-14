@@ -15,10 +15,10 @@ pip install .
 pytest -v
 ```
 
-# Usage
+# Usage: Differential Representation Testing
 This tool is intended to be used as a python module. 
 
-## Differential Representation with Multiple References
+## Multiple References
 ```python
 from hgsig import HGSig
 
@@ -53,7 +53,7 @@ pval = hgs.run()
 
 ```
 
-## Differential Representation using a fisher's exact test
+## Fisher's Exact Test
 ```python
 from hgsig import HGSig
 
@@ -88,7 +88,7 @@ hgs = HGSig(
 pval = hgs.run()
 ```
 
-## Differential Representation using a single reference group
+## Single Reference Group
 It is highly recommended here to use a fisher's exact test because the hypergeometric testing conditions will generally not be satisfied using only a single group. This is because if the groups are of equal sizes it is likely you will have more than the original number of observations in the reference group and thus fail the prerequirements for the hypergeometric test. This condition is not required for a fisher's exact test and so it should be used in this case.
 ```python
 from hgsig import HGSig
@@ -124,7 +124,7 @@ hgs = HGSig(
 pval = hgs.run()
 ```
 
-## Differential Representation of multiple groups with an alternative aggregation function
+## Multiple Groups with an Alternative Aggregation Function
 The default aggregation function for the references is to sum the values across each of the conditions, but it is also possible to use alternative aggregation strategies if it is of interest.
 ```python
 from hgsig import HGSig
