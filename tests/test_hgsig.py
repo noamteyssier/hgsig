@@ -14,20 +14,20 @@ NUM_G = 50
 np.random.seed(SEED)
 
 
-def build_clusters(size=NUM):
+def build_clusters(num_c=NUM_C, size=NUM):
     """
     creates the clusters array
     """
     return np.array([
-        f"c{i}" for i in np.random.choice(NUM_C, size=size)])
+        f"c{i}" for i in np.random.choice(num_c, size=size)])
 
 
-def build_groups(size=NUM):
+def build_groups(num_g=NUM_G, size=NUM):
     """
     creates the groups array
     """
     return np.array([
-        f"g{i}" for i in np.random.choice(NUM_G, size=size)])
+        f"g{i}" for i in np.random.choice(num_g, size=size)])
 
 def validate_methods(hgs: HGSig):
     """
@@ -132,16 +132,16 @@ def test_run_single_reference():
     # overdrawing condition
     groups[:NUM_X] = reference
 
-    for method in ["fishers", "hypergeom"]:
+    for method in ["fishers", "hypergeom", "chisquare"]:
         hgs = HGSig(clusters, groups, reference, method=method)
         hgs.fit()
         validate_methods(hgs)
 
-def test_run_multi_reference():
+def test_run_multi_reference_methods():
     """
     runs the method through a range of conditions
     """
-    for i in np.arange(2, 6):
+    for i in np.arange(2, 5):
         reference = [f"g{i}" for i in np.random.choice(NUM_G, size=i, replace=False)]
         clusters = build_clusters()
         groups = build_groups()
@@ -151,10 +151,19 @@ def test_run_multi_reference():
         # overdrawing condition
         groups[:NUM_X] = np.random.choice(reference, NUM_X)
 
-        for method in ["fishers", "hypergeom"]:
+        for method in ["fishers", "hypergeom", "chisquare"]:
             hgs = HGSig(clusters, groups, reference, method=method)
             hgs.fit()
             validate_methods(hgs)
+
+def test_run_multi_reference_aggregation():
+    """
+    runs the method through a range of conditions
+    """
+    for i in np.arange(2, 5):
+        reference = [f"g{i}" for i in np.random.choice(NUM_G, size=i, replace=False)]
+        clusters = build_clusters()
+        groups = build_groups()
 
         # only run aggregation tests on fishers because it is not guaranteed to pass
         # all tests with hypergeometric testing
