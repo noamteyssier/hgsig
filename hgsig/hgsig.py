@@ -1,7 +1,6 @@
 """
 Differential Representation Testing
 """
-
 from typing import List, Union
 import numpy as np
 from tqdm import tqdm
@@ -158,3 +157,15 @@ class HGSig:
                         t_draw=dist,
                         overrep=overrep)
         return pval_mat
+
+    def __repr__(self) -> str:
+        """
+        string representation of object
+        """
+        name = "HGSig"
+        num_g = f"n_groups: {self.g_unique.size}"
+        num_c = f"n_groups: {self.c_unique.size}"
+        method = f"method: {self.method}"
+        reference = f"reference: {self.reference}"
+        attr = [name, num_g, num_c, method, reference]
+        return "\n  ".join(attr)
