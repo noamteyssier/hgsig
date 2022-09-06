@@ -20,13 +20,13 @@ def _filter_significant(
     expressed clusters/guides
     """
     if use_pval:
-        mask = hgs.get_pval() < threshold
+        fn = hgs.get_pval
     else:
-        mask = hgs.get_qval() < threshold
-    mat[~mask] = 0
-    
-    null_mask = np.sum(mat != 0, axis=1) != 0
-    return mat[null_mask]
+        fn = hgs.get_qval
+
+    min_sig = fn().min(axis=1)
+    group_mask = min_sig < threshold
+    return mat[group_mask]
 
 
 def plot_hgsig(
