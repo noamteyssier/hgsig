@@ -63,7 +63,7 @@ def plot_hgsig(
                 threshold=threshold)
 
     if transpose:
-        mat = mat.T
+        mat = mat.transpose()
 
     sns.clustermap(
         mat,
