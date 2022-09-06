@@ -210,7 +210,7 @@ class HGSig:
         """
         self.snlf_mat = np.sign(self.pcc_mat) * self.nlf_mat
 
-    def get_pval(self):
+    def get_pval(self) -> np.ndarray:
         """
         retrieve the pval matrix
         """
@@ -219,7 +219,7 @@ class HGSig:
                 "Please run the .fit() method first")
         return self.pval_mat
 
-    def get_qval(self):
+    def get_qval(self) -> np.ndarray:
         """
         retrieve the q-value matrix
         """
@@ -228,7 +228,7 @@ class HGSig:
                 "Please run the .fit() method first")
         return self.qval_mat
 
-    def get_nlf(self):
+    def get_nlf(self) -> np.ndarray:
         """
         retrieve the -log10 transformed q-value matrix
         """
@@ -237,7 +237,7 @@ class HGSig:
                 "Please run the .fit() method first")
         return self.nlf_mat
 
-    def get_snlf(self):
+    def get_snlf(self) -> np.ndarray:
         """
         retrieve the percent change signed -log10 transformed q-value matrix
         """
@@ -246,7 +246,7 @@ class HGSig:
                 "Please run the .fit() method first")
         return self.snlf_mat
 
-    def get_pcc(self):
+    def get_pcc(self) -> np.ndarray:
         """
         retrieve the percent change matrix
         """
