@@ -17,7 +17,8 @@ dependencies = [
 	"seaborn",
 	"fastcluster",
 	"tqdm",
-	"pytest"
+	"pytest",
+  "nptyping"
 ]
 
 [project.urls]

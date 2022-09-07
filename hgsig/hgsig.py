@@ -3,6 +3,7 @@ Differential Representation Testing
 """
 from typing import List, Union
 import numpy as np
+from nptyping import Float, NDArray, String, Shape
 from tqdm import tqdm
 
 from .utils import (
@@ -187,30 +188,30 @@ class HGSig:
                     self.ref_dist,
                     dist)
 
-        self._calculate_fdr()
-        self._calculate_nlf()
-        self._calculate_snlf()
+        self.qval_mat = self._calculate_fdr()
+        self.nlf_mat = self._calculate_nlf()
+        self.snlf_mat = self._calculate_snlf()
         self._isfit = True
 
-    def _calculate_fdr(self):
+    def _calculate_fdr(self) -> NDArray[Shape["*, *"], Float]:
         """
         calculates the false discovery rate
         """
-        self.qval_mat = false_discovery_rate(self.pval_mat)
+        return false_discovery_rate(self.pval_mat)
 
-    def _calculate_nlf(self):
+    def _calculate_nlf(self) -> NDArray[Shape["*, *"], Float]:
         """
         calculates the negative log false discovery rate
         """
-        self.nlf_mat = -np.log10(self.qval_mat)
+        return -np.log10(self.qval_mat)
 
-    def _calculate_snlf(self):
+    def _calculate_snlf(self) -> NDArray[Shape["*, *"], Float]:
         """
         calculates the signed negative log false discovery rate
         """
-        self.snlf_mat = np.sign(self.pcc_mat) * self.nlf_mat
+        return np.sign(self.pcc_mat) * self.nlf_mat
 
-    def get_pval(self) -> np.ndarray:
+    def get_pval(self) -> NDArray[Shape["*, *"], Float]:
         """
         retrieve the pval matrix
         """
@@ -219,7 +220,7 @@ class HGSig:
                 "Please run the .fit() method first")
         return self.pval_mat
 
-    def get_qval(self) -> np.ndarray:
+    def get_qval(self) -> NDArray[Shape["*, *"], Float]:
         """
         retrieve the q-value matrix
         """
@@ -228,7 +229,7 @@ class HGSig:
                 "Please run the .fit() method first")
         return self.qval_mat
 
-    def get_nlf(self) -> np.ndarray:
+    def get_nlf(self) -> NDArray[Shape["*, *"], Float]:
         """
         retrieve the -log10 transformed q-value matrix
         """
@@ -237,7 +238,7 @@ class HGSig:
                 "Please run the .fit() method first")
         return self.nlf_mat
 
-    def get_snlf(self) -> np.ndarray:
+    def get_snlf(self) -> NDArray[Shape["*, *"], Float]:
         """
         retrieve the percent change signed -log10 transformed q-value matrix
         """
@@ -246,7 +247,7 @@ class HGSig:
                 "Please run the .fit() method first")
         return self.snlf_mat
 
-    def get_pcc(self) -> np.ndarray:
+    def get_pcc(self) -> NDArray[Shape["*, *"], Float]:
         """
         retrieve the percent change matrix
         """
@@ -255,13 +256,13 @@ class HGSig:
                 "Please run the .fit() method first")
         return self.pcc_mat
 
-    def get_groups(self):
+    def get_groups(self) -> NDArray[Shape["*"], String]:
         """
         retrieve the group names
         """
         return self.g_unique
 
-    def get_clusters(self):
+    def get_clusters(self) -> NDArray[Shape["*"], String]:
         """
         retrieve the cluster names
         """
