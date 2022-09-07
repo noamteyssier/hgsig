@@ -21,7 +21,7 @@ def _filter_significant(
     values = hgs.get_pval() if use_pval else hgs.get_qval()
     min_sig = values.min(axis=1)
     mask = min_sig < threshold
-    return mat[mask]
+    return mat.iloc[mask]
 
 
 def plot_hgsig(
