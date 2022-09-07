@@ -3,7 +3,7 @@ API
 
 HGSig
 =====
-.. module:: hgsig.hgsig
+.. module:: hgsig
 .. currentmodule:: hgsig
 .. autosummary::
     :toctree: generated/
@@ -12,7 +12,7 @@ HGSig
 
 Plotting
 ========
-.. module:: hgsig.plots
+.. module:: hgsig
 .. currentmodule:: hgsig
 .. autosummary::
     :toctree: generated/
