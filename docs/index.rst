@@ -93,6 +93,16 @@ The available tests are:  ``[ 'hypergeom', 'fishers', 'chisquare' ]``.
    # perform the test
    hgs.fit()
 
+Visualizing the Results
+^^^^^^^^^^^^^^^^^^^^^^^
+Once the representation test is complete you can visualize the results on a clustermap with the :func:`plot_hgsig <hgsig.plot_hgsig>` function.
+
+You can choose which basis (percent change, signed negative log fdr, etc.) you'd like to view the clustering with.
+
+This function acts as a lightweight wrapper over the `seaborn clustermap <https://seaborn.pydata.org/generated/seaborn.clustermap.html>`_ function - so you can pass in all keyword arguments you would expect.
+
+>>> plot_hgsig(hgs, basis='snlf', filter_significant=True)
+
 
 API
 ---
