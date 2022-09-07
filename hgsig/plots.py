@@ -2,7 +2,6 @@
 Plotting functions for HGSig objects
 """
 
-import numpy as np
 import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
@@ -14,19 +13,15 @@ def _filter_significant(
         mat: pd.DataFrame,
         hgs: HGSig,
         use_pval: bool = False,
-        threshold: float = 0.05):
+        threshold: float = 0.05) -> pd.DataFrame:
     """
     filters the dataframe to only the significantly differentially
     expressed clusters/guides
     """
-    if use_pval:
-        fn = hgs.get_pval
-    else:
-        fn = hgs.get_qval
-
-    min_sig = fn().min(axis=1)
-    group_mask = min_sig < threshold
-    return mat[group_mask]
+    values = hgs.get_pval() if use_pval else hgs.get_qval()
+    min_sig = values.min(axis=1)
+    mask = min_sig < threshold
+    return mat.iloc[mask]
 
 
 def plot_hgsig(
@@ -67,7 +62,7 @@ def plot_hgsig(
                 threshold=threshold)
 
     if transpose:
-        mat = mat.T
+        mat = mat.transpose()
 
     sns.clustermap(
         mat,
