@@ -3,7 +3,7 @@ Differential Representation Testing
 """
 from typing import List, Union
 import numpy as np
-from nptyping import Float, NDArray, String, Shape
+import numpy.typing as npt
 from tqdm import tqdm
 
 from .utils import (
@@ -15,31 +15,66 @@ from .utils import (
 
 
 class HGSig:
+    """
+    Differential Representation Testing
+
+    Methods
+    -------
+    fit:
+        performs the representation test
+    get_clusters:
+        returns the unique cluster names
+    get_groups:
+        returns the unique group names
+    get_pval:
+        returns the calculated pvalues of the significance test
+    get_qval:
+        returns the BH-adjusted pvalues of the significance test
+    get_pcc:
+        returns the percent change of each groups cluster representation
+    get_nlf:
+        returns the negative log adjusted pvalues (negative log fdr)
+    get_snlf:
+        returns the signed negative log adjusted pvalues (signed negative log fdr)
+
+    Attributes
+    ----------
+    clusters: npt.NDArray[np.object_]
+        The provided clusters
+    groups: npt.NDArray[np.object_]
+        The provided groups
+    reference: npt.NDArray[np.object_]
+        The provided references
+    method: str
+        The provided testing method
+    agg: str
+        The provided aggregation method
+    """
     def __init__(
             self,
-            clusters: np.ndarray,
-            groups: np.ndarray,
-            reference: Union[List[str], str],
+            clusters: npt.ArrayLike,
+            groups: npt.ArrayLike,
+            reference: Union[List[str], str, npt.ArrayLike],
             method: str = "hypergeom",
             agg: str = "sum"):
-
         """
-        Differential Representation Testing
 
-        Inputs:
-            clusters: np.ndarray
-                the array representing which cluster an observation belongs to
-            groups: np.ndarray
-                the array representing which group an observation belongs to
-            reference: Union[List[str], str]
-                the value(s) representing which group(s) to use as reference.
-                Will aggregate the values of the references if multiple are provided.
-            method: str
-                the method to calculate significance with (hypergeom, fishers, chisquare)
-            agg: str
-                the aggregation method to use for multiple reference values.
-                known values : (sum[default], mean, median)
+        Parameters
+        ----------
+        clusters: npt.ArrayLike
+            the array representing which cluster an observation belongs to
+        groups: npt.ArrayLike
+            the array representing which group an observation belongs to
+        reference: Union[List[str], str, npt.ArrayLike]
+            the value(s) representing which group(s) to use as reference.
+            Will aggregate the values of the references if multiple are provided.
+        method: str
+            the method to calculate significance with (hypergeom, fishers, chisquare)
+        agg: str
+            the aggregation method to use for multiple reference values.
+            known values : (sum[default], mean, median)
         """
+
 
         self.clusters = np.array(clusters)
         self.groups = np.array(groups)
@@ -193,25 +228,25 @@ class HGSig:
         self.snlf_mat = self._calculate_snlf()
         self._isfit = True
 
-    def _calculate_fdr(self) -> NDArray[Shape["*, *"], Float]:
+    def _calculate_fdr(self) -> npt.NDArray[np.float64]:
         """
         calculates the false discovery rate
         """
         return false_discovery_rate(self.pval_mat)
 
-    def _calculate_nlf(self) -> NDArray[Shape["*, *"], Float]:
+    def _calculate_nlf(self) -> npt.NDArray[np.float64]:
         """
         calculates the negative log false discovery rate
         """
         return -np.log10(self.qval_mat)
 
-    def _calculate_snlf(self) -> NDArray[Shape["*, *"], Float]:
+    def _calculate_snlf(self) -> npt.NDArray[np.float64]:
         """
         calculates the signed negative log false discovery rate
         """
         return np.sign(self.pcc_mat) * self.nlf_mat
 
-    def get_pval(self) -> NDArray[Shape["*, *"], Float]:
+    def get_pval(self) -> npt.NDArray[np.float64]:
         """
         retrieve the pval matrix
         """
@@ -220,7 +255,7 @@ class HGSig:
                 "Please run the .fit() method first")
         return self.pval_mat
 
-    def get_qval(self) -> NDArray[Shape["*, *"], Float]:
+    def get_qval(self) -> npt.NDArray[np.float64]:
         """
         retrieve the q-value matrix
         """
@@ -229,7 +264,7 @@ class HGSig:
                 "Please run the .fit() method first")
         return self.qval_mat
 
-    def get_nlf(self) -> NDArray[Shape["*, *"], Float]:
+    def get_nlf(self) -> npt.NDArray[np.float64]:
         """
         retrieve the -log10 transformed q-value matrix
         """
@@ -238,7 +273,7 @@ class HGSig:
                 "Please run the .fit() method first")
         return self.nlf_mat
 
-    def get_snlf(self) -> NDArray[Shape["*, *"], Float]:
+    def get_snlf(self) -> npt.NDArray[np.float64]:
         """
         retrieve the percent change signed -log10 transformed q-value matrix
         """
@@ -247,7 +282,7 @@ class HGSig:
                 "Please run the .fit() method first")
         return self.snlf_mat
 
-    def get_pcc(self) -> NDArray[Shape["*, *"], Float]:
+    def get_pcc(self) -> npt.NDArray[np.float64]:
         """
         retrieve the percent change matrix
         """
@@ -256,13 +291,13 @@ class HGSig:
                 "Please run the .fit() method first")
         return self.pcc_mat
 
-    def get_groups(self) -> NDArray[Shape["*"], String]:
+    def get_groups(self) -> npt.NDArray[np.object_]:
         """
         retrieve the group names
         """
         return self.g_unique
 
-    def get_clusters(self) -> NDArray[Shape["*"], String]:
+    def get_clusters(self) -> npt.NDArray[np.object_]:
         """
         retrieve the cluster names
         """

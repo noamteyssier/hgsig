@@ -130,3 +130,6 @@ dmypy.json
 
 # Notebooks
 *.ipynb
+
+# docs
+docs/generated/**

@@ -18,7 +18,10 @@ dependencies = [
   "fastcluster",
   "tqdm",
   "pytest",
-  "nptyping"
+  "sphinx",
+  "numpydoc",
+  "pydata-sphinx-theme",
+  "sphinx-autodoc-typehints"
 ]
 
 [project.urls]
