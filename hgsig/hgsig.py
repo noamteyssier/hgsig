@@ -76,8 +76,8 @@ class HGSig:
         """
         validates that the inputs are in the expected format
         """
-        c_total = self.c_counts.sum()
-        g_total = self.g_counts.sum()
+        c_total: int = self.c_counts.sum()
+        g_total: int = self.g_counts.sum()
 
         if c_total != g_total:
             raise ValueError(
