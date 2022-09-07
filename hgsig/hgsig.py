@@ -15,31 +15,66 @@ from .utils import (
 
 
 class HGSig:
+    """
+    Differential Representation Testing
+
+    Methods
+    -------
+    fit:
+        performs the representation test
+    get_clusters:
+        returns the unique cluster names
+    get_groups:
+        returns the unique group names
+    get_pval:
+        returns the calculated pvalues of the significance test
+    get_qval:
+        returns the BH-adjusted pvalues of the significance test
+    get_pcc:
+        returns the percent change of each groups cluster representation
+    get_nlf:
+        returns the negative log adjusted pvalues (negative log fdr)
+    get_snlf:
+        returns the signed negative log adjusted pvalues (signed negative log fdr)
+
+    Attributes
+    ----------
+    clusters: npt.NDArray[np.object_]
+        The provided clusters
+    groups: npt.NDArray[np.object_]
+        The provided groups
+    reference: npt.NDArray[np.object_]
+        The provided references
+    method: str
+        The provided testing method
+    agg: str
+        The provided aggregation method
+    """
     def __init__(
             self,
-            clusters: np.ndarray,
-            groups: np.ndarray,
-            reference: Union[List[str], str],
+            clusters: npt.ArrayLike,
+            groups: npt.ArrayLike,
+            reference: Union[List[str], str, npt.ArrayLike],
             method: str = "hypergeom",
             agg: str = "sum"):
-
         """
-        Differential Representation Testing
 
-        Inputs:
-            clusters: np.ndarray
-                the array representing which cluster an observation belongs to
-            groups: np.ndarray
-                the array representing which group an observation belongs to
-            reference: Union[List[str], str]
-                the value(s) representing which group(s) to use as reference.
-                Will aggregate the values of the references if multiple are provided.
-            method: str
-                the method to calculate significance with (hypergeom, fishers, chisquare)
-            agg: str
-                the aggregation method to use for multiple reference values.
-                known values : (sum[default], mean, median)
+        Parameters
+        ----------
+        clusters: npt.ArrayLike
+            the array representing which cluster an observation belongs to
+        groups: npt.ArrayLike
+            the array representing which group an observation belongs to
+        reference: Union[List[str], str, npt.ArrayLike]
+            the value(s) representing which group(s) to use as reference.
+            Will aggregate the values of the references if multiple are provided.
+        method: str
+            the method to calculate significance with (hypergeom, fishers, chisquare)
+        agg: str
+            the aggregation method to use for multiple reference values.
+            known values : (sum[default], mean, median)
         """
+
 
         self.clusters = np.array(clusters)
         self.groups = np.array(groups)
