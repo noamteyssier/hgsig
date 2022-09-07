@@ -1,13 +1,20 @@
 # HGSig
-This tool is used to measure the differential clustered representation of grouped objects. The original motivation was in CRISPRi single-cell sequencing data and measuring the differential representation of individual knockdowns in each of the leiden clusters. This was used to guide whether a knockdown had a significant representation from the non-targeting controls and so provide a hint at the potential function of that knockdown. This tool is a means of generalizing the code to any sort of clusters and groups with references and provide an API for testing different differential representation strategies in a reproducible way. 
 
-# Installation
-## pip 
+This tool is used to measure the differential clustered representation of grouped objects.
+The original motivation was in CRISPRi single-cell sequencing data and measuring the differential representation of individual knockdowns in each of the leiden clusters.
+This was used to guide whether a knockdown had a significant representation from the non-targeting controls and so provide a hint at the potential function of that knockdown.
+This tool is a means of generalizing the code to any sort of clusters and groups with references and provide an API for testing different differential representation strategies in a reproducible way.
+
+## Installation
+
+### pip
+
 ```bash
 pip install hgsig
 ```
 
-## github
+### github
+
 ```bash
 git clone https://github.com/noamteyssier/hgsig
 cd hgsig
@@ -15,10 +22,12 @@ pip install .
 pytest -v
 ```
 
-# Usage: Differential Representation Testing
-This tool is intended to be used as a python module. 
+## Usage: Differential Representation Testing
 
-## Multiple References
+This tool is intended to be used as a python module.
+
+### Multiple References
+
 ```python
 import numpy as np
 from hgsig import HGSig
@@ -55,7 +64,8 @@ pval = hgs.get_pval()
 pcc = hgs.get_pcc()
 ```
 
-## Fisher's Exact Test
+### Fisher's Exact Test
+
 ```python
 import numpy as np
 from hgsig import HGSig
@@ -93,8 +103,12 @@ pval = hgs.get_pval()
 pcc = hgs.get_pcc()
 ```
 
-## Single Reference Group
-It is highly recommended here to use a fisher's exact test because the hypergeometric testing conditions will generally not be satisfied using only a single group. This is because if the groups are of equal sizes it is likely you will have more than the original number of observations in the reference group and thus fail the prerequirements for the hypergeometric test. This condition is not required for a fisher's exact test and so it should be used in this case.
+### Single Reference Group
+
+It is highly recommended here to use a fisher's exact test because the hypergeometric testing conditions will generally not be satisfied using only a single group.
+This is because if the groups are of equal sizes it is likely you will have more than the original number of observations in the reference group and thus fail the prerequirements for the hypergeometric test.
+This condition is not required for a fisher's exact test and so it should be used in this case.
+
 ```python
 import numpy as np
 from hgsig import HGSig
@@ -132,8 +146,10 @@ pval = hgs.get_pval()
 pcc = hgs.get_pcc()
 ```
 
-## Multiple Groups with an Alternative Aggregation Function
+### Multiple Groups with an Alternative Aggregation Function
+
 The default aggregation function for the references is to sum the values across each of the conditions, but it is also possible to use alternative aggregation strategies if it is of interest.
+
 ```python
 import numpy as np
 from hgsig import HGSig
